@@ -24,7 +24,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/stocks/${ticker}`
+        `${process.env.NEXT_PUBLIC_API_URL}/stocks/${ticker}`
       );
 
       const data = await response.json();
@@ -32,7 +32,7 @@ export default function Home() {
       setStockData(data);
 
       const historyResponse = await fetch(
-        `http://127.0.0.1:8000/stocks/${ticker}/history`
+        `${process.env.NEXT_PUBLIC_API_URL}/stocks/$/history`
       );
 
       const history = await historyResponse.json();
