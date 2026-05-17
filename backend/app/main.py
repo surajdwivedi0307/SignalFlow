@@ -14,7 +14,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
      "http://localhost:3000",
-     "https://signal-flow-git-vercel-react-se-79f661-suraj-dwivedi-s-projects.vercel.app",],
+     "https://signal-flow.vercel.app",],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
