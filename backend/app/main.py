@@ -9,7 +9,16 @@ from app.models.stock import Stock
 from app.models.portfolio import Portfolio
 from app.models.holding import Holding
 
+from app.core.database import Base, engine
+
+
+
 app = FastAPI()
+
+
+Base.metadata.create_all(bind=engine)
+print("DATABASE TABLES CREATED")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
