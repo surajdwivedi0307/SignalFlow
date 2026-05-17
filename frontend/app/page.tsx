@@ -2,13 +2,63 @@
 
 import { useState, useEffect } from "react";
 
+import {
+
+  LineChart,
+
+  Line,
+
+  XAxis,
+
+  YAxis,
+
+  Tooltip,
+
+  ResponsiveContainer,
+
+  CartesianGrid
+
+} from "recharts";
+
+type StockData = {
+  company_name?: string;
+  ticker?: string;
+  current_price?: number | string;
+  market_cap?: number | string;
+  sector?: string;
+  industry?: string;
+};
+
+type PortfolioHolding = {
+  ticker: string;
+  allocation_percent: number | string;
+  current_value: number | string;
+  profit_loss: number | string;
+};
+
+type PortfolioSummary = {
+  portfolio_health_score?: number;
+  health_status?: string;
+  risk_level?: string;
+  risk_reason?: string;
+  attention_insights?: string[];
+  holdings?: PortfolioHolding[];
+};
+
+type HistoryItem = {
+  created_at: string;
+  portfolio_health_score: number;
+};
+
 export default function Home() {
 
   const [ticker, setTicker] = useState("");
 
-  const [stockData, setStockData] = useState<any>(null);
+  const [stockData, setStockData] = useState<StockData | null>(null);
 
-  const [portfolioData, setPortfolioData] = useState<any>(null);
+  const [portfolioData, setPortfolioData] = useState<PortfolioSummary | null>(null);
+
+  const [historyData, setHistoryData] = useState<HistoryItem[]>([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -37,29 +87,33 @@ export default function Home() {
     setLoading(false);
   }
 
-  async function fetchPortfolioSummary() {
-
-    try {
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/portfolio/1/summary`
-      );
-
-      const data = await response.json();
-
-      setPortfolioData(data);
-
-    } catch (error) {
-
-      console.error(error);
-
-    }
-  }
-
   useEffect(() => {
+    const fetchPortfolioSummary = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/1/summary`
+        );
+        const data = await response.json();
+        setPortfolioData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    fetchPortfolioSummary();
+    const fetchPortfolioHistory = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/portfolio/1/history`
+        );
+        const data = await response.json();
+        setHistoryData(data?.history ?? []);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
+    void fetchPortfolioSummary();
+    void fetchPortfolioHistory();
   }, []);
 
   return (
@@ -133,9 +187,8 @@ export default function Home() {
 
             <div className="space-y-4">
 
-              {portfolioData.attention_insights.map(
+              {portfolioData.attention_insights?.map(
                 (insight: string, index: number) => (
-
                   <div
                     key={index}
                     className="bg-zinc-800 rounded-xl p-4"
@@ -149,6 +202,46 @@ export default function Home() {
 
           </div>
         )}
+
+        {/* Portfolio Trend */}
+
+{historyData.length > 0 && (
+
+  <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-10">
+
+    <h2 className="text-2xl font-bold mb-6">
+      Portfolio Health Trend
+    </h2>
+
+    <div className="h-80">
+
+      <ResponsiveContainer width="100%" height="100%">
+
+        <LineChart data={historyData}>
+
+          <CartesianGrid strokeDasharray="3 3" />
+
+          <XAxis dataKey="created_at" />
+
+          <YAxis />
+
+          <Tooltip />
+
+          <Line
+            type="monotone"
+            dataKey="portfolio_health_score"
+            stroke="#ffffff"
+            strokeWidth={3}
+          />
+
+        </LineChart>
+
+      </ResponsiveContainer>
+
+    </div>
+
+  </div>
+)}
 
         {/* Holdings Table */}
 
@@ -180,8 +273,7 @@ export default function Home() {
 
               <tbody>
 
-                {portfolioData.holdings.map((holding: any) => (
-
+                {portfolioData.holdings?.map((holding: PortfolioHolding) => (
                   <tr
                     key={holding.ticker}
                     className="border-b border-zinc-800"
