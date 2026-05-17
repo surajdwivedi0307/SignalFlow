@@ -93,4 +93,4 @@ def get_portfolio_summary(
         .first()
     )
 
-    return calculate_portfolio_summary(portfolio)
+    return calculate_portfolio_summary(portfolio,db)

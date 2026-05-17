@@ -34,9 +34,9 @@ def calculate_portfolio_summary(
 
     for holding in portfolio.holdings:
 
-        current_price = get_current_price(
+        current_price = float(get_current_price(
             holding.ticker
-        )
+        ))
 
         if current_price is None:
 
@@ -55,6 +55,17 @@ def calculate_portfolio_summary(
         profit_loss = (
             current_value -
             invested_value
+        )
+        invested_value = float(
+            invested_value
+        )
+
+        current_value = float(
+            current_value
+        )
+
+        profit_loss = float(
+            profit_loss
         )
 
         total_invested += invested_value
@@ -344,7 +355,7 @@ def calculate_portfolio_summary(
 
         portfolio_id=portfolio.id,
 
-        portfolio_health_score=(
+        portfolio_health_score=float(
             portfolio_health_score
         ),
 
@@ -354,7 +365,7 @@ def calculate_portfolio_summary(
 
         risk_level=risk_level,
 
-        diversification_score=(
+        diversification_score=float(
             diversification_score
         )
     )
