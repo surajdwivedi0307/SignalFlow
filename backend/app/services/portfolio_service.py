@@ -55,19 +55,29 @@ def calculate_portfolio_summary(portfolio):
     
     largest_holding = None
     largest_allocation = 0
-    
+    risk_level = "LOW"
+    risk_reason = "Portfolio appears diversified"
     for holding in holdings_summary:
-        allocation_percent = (
-        holding["current_value"] / total_current_value
-        ) * 100
-        
-        holding["allocation_percent"] = round(
-        allocation_percent,
-        2
-        )
+        allocation_percent = (holding["current_value"] / total_current_value) * 100
+
+        holding["allocation_percent"] = round(allocation_percent, 2)
+
+        # update largest holding
         if allocation_percent > largest_allocation:
-           largest_allocation = allocation_percent
-           largest_holding = holding["ticker"]
+            largest_allocation = allocation_percent
+            largest_holding = holding["ticker"]
+
+        # determine risk level based on individual allocation
+        if allocation_percent > 40:
+            risk_level = "HIGH"
+            risk_reason = (
+                f'{holding["ticker"]} exceeds 40% portfolio allocation'
+            )
+        elif allocation_percent > 25 and risk_level != "HIGH":
+            risk_level = "MEDIUM"
+            risk_reason = (
+                f'{holding["ticker"]} has elevated portfolio concentration'
+            )
 
     return {
         "portfolio_name": portfolio.name,
@@ -75,6 +85,8 @@ def calculate_portfolio_summary(portfolio):
         "total_current_value": round(total_current_value, 2),
         "total_profit_loss": round(total_profit_loss, 2),
         "largest_holding": largest_holding,
+        "risk_level": risk_level,
+        "risk_reason": risk_reason,
         "holdings": holdings_summary
     }
 
