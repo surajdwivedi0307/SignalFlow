@@ -10,6 +10,10 @@ from app.schemas.portfolio_schema import (
     HoldingCreate,
 )
 
+from app.services.portfolio_service import (
+    calculate_portfolio_summary
+)
+
 router = APIRouter()
 
 
@@ -76,3 +80,17 @@ def get_portfolio(
     )
 
     return portfolio
+
+@router.get("/portfolio/{portfolio_id}/summary")
+def get_portfolio_summary(
+    portfolio_id: int,
+    db: Session = Depends(get_db)
+):
+
+    portfolio = (
+        db.query(Portfolio)
+        .filter(Portfolio.id == portfolio_id)
+        .first()
+    )
+
+    return calculate_portfolio_summary(portfolio)
