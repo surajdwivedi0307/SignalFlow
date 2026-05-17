@@ -8,6 +8,7 @@ from app.api.routes.stocks import router as stock_router
 from app.models.stock import Stock
 from app.models.portfolio import Portfolio
 from app.models.holding import Holding
+from app.models.portfolio_snapshot import PortfolioSnapshot
 
 from app.core.database import Base, engine
 
