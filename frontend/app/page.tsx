@@ -43,6 +43,7 @@ type PortfolioSummary = {
   risk_reason?: string;
   attention_insights?: string[];
   holdings?: PortfolioHolding[];
+  portfolio_narrative?: string;
 };
 
 type HistoryItem = {
@@ -174,6 +175,25 @@ export default function Home() {
 
           </div>
         )}
+
+        {/* AI Portfolio Narrative */}
+
+{portfolioData && (
+
+  <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-10">
+
+    <p className="text-zinc-400 mb-3">
+      AI Portfolio Narrative
+    </p>
+
+    <p className="text-lg leading-8 text-zinc-200">
+
+      {portfolioData.portfolio_narrative}
+
+    </p>
+
+  </div>
+)}
 
         {/* Attention Insights */}
 
